@@ -60,7 +60,7 @@ def extract_relationships(file):
 
 # Streamlit app
 def main():
-    st.title("Complexity Extractor")
+    st.title("Complexity Detector")
     st.subheader('Find out how complex your dataset is !')
 
     # File selection
