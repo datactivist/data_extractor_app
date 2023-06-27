@@ -65,7 +65,7 @@ def main():
     st.title("Dataset Analysis")
 
     # File selection
-    file_path = st.file_uploader("Upload CSV File", type=["csv"])
+    file_path = st.file_uploader("Upload CSV File", type=['csv'])
     
     if file_path is not None:
         # Calculate CSV size
