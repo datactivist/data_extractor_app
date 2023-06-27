@@ -1,81 +1,55 @@
 import streamlit as st
-import csv
+import pandas as pd
 
 # Function to calculate the CSV size
-def calculate_csv_size(file):
+def calculate_csv_size(dataframe):
     try:
-        reader = csv.reader(file)
-        num_attributes = len(next(reader))
-        num_entities = sum(1 for _ in reader)
+        num_attributes = len(dataframe.columns)
+        num_entities = len(dataframe)
 
         csv_size = num_attributes * num_entities
         return csv_size
-    except IOError:
-        st.error("Error: File not found or unable to open the file.")
+    except Exception as e:
+        st.error(f"Error: {e}")
         return 0
-
 
 # Function to extract the number of relationships
-def extract_relationships(file):
+def extract_relationships(dataframe):
     try:
-        reader = csv.reader(file)
-
-        # Read the CSV headers into a list of lists
-        headers = []
-        for _ in range(1):  # Assuming up to 1 row can contain column headers
-            headers.append(next(reader))
-
-        # Read the CSV data into a list of lists
-        data = [row for row in reader]
-
         # Calculate the number of relationships
-
-        # Count the number of rows in the data
-        num_rows = len(data)
-
-        # Count the number of columns by considering the first header row
-        num_columns = len(headers[0])
-
-        # Calculate the number of index combinations
-        num_index_combinations = 1
-
-        # Iterate over the first 1 column to extract index values
-        for i in range(1):
-            # Extract unique values for the current index column in the data rows
-            # Only consider rows that have enough elements to access the index
-            index_values = set(row[i] for row in data if len(row) > i)
-
-            # Multiply the count of index combinations by the number of unique values
-            num_index_combinations *= len(index_values)
+        num_rows = len(dataframe)
+        num_columns = len(dataframe.columns)
 
         # Calculate the total number of relationships
-        num_relationships = num_rows * num_columns * num_columns * num_index_combinations
-
+        num_relationships = num_rows * num_columns * num_columns
         return num_relationships
-
-    except IOError:
-        st.error("Error: File not found or unable to open the file.")
+    except Exception as e:
+        st.error(f"Error: {e}")
         return 0
-
 
 # Streamlit app
 def main():
     st.title("Dataset Analysis")
 
     # File selection
-    file = st.file_uploader("Upload CSV File", type=["csv"])
+    uploaded_file = st.file_uploader("Upload CSV File", type=["csv"])
     
-    if file is not None:
-        # Calculate CSV size
-        csv_size = calculate_csv_size(file)
-        st.subheader("CSV Size")
-        st.write(f"The size of the dataset is: {csv_size}")
+    if uploaded_file is not None:
+        try:
+            # Convert CSV file to DataFrame
+            dataframe = pd.read_csv(uploaded_file)
+            
+            # Calculate CSV size
+            csv_size = calculate_csv_size(dataframe)
+            st.subheader("CSV Size")
+            st.write(f"The size of the dataset is: {csv_size}")
 
-        # Extract number of relationships
-        num_relationships = extract_relationships(file)
-        st.subheader("Number of Relationships")
-        st.write(f"The number of relationships in the dataset is: {num_relationships}")
-
+            # Extract number of relationships
+            num_relationships = extract_relationships(dataframe)
+            st.subheader("Number of Relationships")
+            st.write(f"The number of relationships in the dataset is: {num_relationships}")
+        except Exception as e:
+            st.error(f"Error: {e}")
 
 if __name__ == "__main__":
     main()
