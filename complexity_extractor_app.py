@@ -76,20 +76,21 @@ def main():
     
     if uploaded_file is not None:
         try:
-            # Convert CSV file to DataFrame
-            dataframe = pd.read_csv(uploaded_file)
-            
+            # Convert CSV file to BytesIO
+            file = uploaded_file.getvalue()
+
             # Calculate CSV size
-            csv_size = calculate_csv_size(dataframe)
+            csv_size = calculate_csv_size(file)
             st.subheader("CSV Size")
             st.write(f"The size of the dataset is: {csv_size}")
 
             # Extract number of relationships
-            num_relationships = extract_relationships(dataframe)
+            num_relationships = extract_relationships(file)
             st.subheader("Number of Relationships")
             st.write(f"The number of relationships in the dataset is: {num_relationships}")
         except Exception as e:
             st.error(f"Error: {e}")
+
 
 if __name__ == "__main__":
     main()
