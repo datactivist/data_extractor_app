@@ -2,10 +2,9 @@ import streamlit as st
 import csv
 
 # Function to calculate the CSV size
-def calculate_csv_size(file_path):
+def calculate_csv_size(file):
     try:
-        content = file_path.read().decode('utf-8')  # Read the file content as a string
-        reader = csv.reader(content.splitlines())
+        reader = csv.reader(file)
         num_attributes = len(next(reader))
         num_entities = sum(1 for _ in reader)
 
@@ -17,10 +16,9 @@ def calculate_csv_size(file_path):
 
 
 # Function to extract the number of relationships
-def extract_relationships(file_path):
+def extract_relationships(file):
     try:
-        content = file_path.read().decode('utf-8')  # Read the file content as a string
-        reader = csv.reader(content.splitlines())
+        reader = csv.reader(file)
 
         # Read the CSV headers into a list of lists
         headers = []
@@ -65,16 +63,16 @@ def main():
     st.title("Dataset Analysis")
 
     # File selection
-    file_path = st.file_uploader("Upload CSV File", type=['csv'])
+    file = st.file_uploader("Upload CSV File", type=["csv"])
     
-    if file_path is not None:
+    if file is not None:
         # Calculate CSV size
-        csv_size = calculate_csv_size(file_path)
+        csv_size = calculate_csv_size(file)
         st.subheader("CSV Size")
         st.write(f"The size of the dataset is: {csv_size}")
 
         # Extract number of relationships
-        num_relationships = extract_relationships(file_path)
+        num_relationships = extract_relationships(file)
         st.subheader("Number of Relationships")
         st.write(f"The number of relationships in the dataset is: {num_relationships}")
 
