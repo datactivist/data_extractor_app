@@ -1,21 +1,17 @@
-#import libraries
+# Import libraries
 import streamlit as st
 import pandas as pd
+from io import StringIO
 
 # Function to calculate the CSV size
 def calculate_csv_size(file):
-    """
-    Calculates the size of the CSV dataset based on the number of attributes and entities.
-
-    Parameters:
-        file (BytesIO): The input CSV file as a BytesIO object.
-
-    Returns:
-        int: The size of the CSV dataset.
-    """
     try:
+        # Convert bytes data to a string-based file-like object
+        string_data = file.decode("utf-8")
+        stringio = StringIO(string_data)
+
         # Read the CSV file into a DataFrame
-        dataframe = pd.read_csv(file)
+        dataframe = pd.read_csv(stringio)
 
         num_attributes = len(dataframe.columns)
         num_entities = len(dataframe)
@@ -28,18 +24,13 @@ def calculate_csv_size(file):
 
 # Function to extract the number of relationships
 def extract_relationships(file):
-    """
-    Extracts the number of relationships in the CSV dataset.
-
-    Parameters:
-        file (BytesIO): The input CSV file as a BytesIO object.
-
-    Returns:
-        int: The number of relationships in the dataset.
-    """
     try:
+        # Convert bytes data to a string-based file-like object
+        string_data = file.decode("utf-8")
+        stringio = StringIO(string_data)
+
         # Read the CSV file into a DataFrame
-        dataframe = pd.read_csv(file)
+        dataframe = pd.read_csv(stringio)
 
         # Calculate the number of relationships
         num_rows = len(dataframe)
@@ -76,7 +67,7 @@ def main():
     
     if uploaded_file is not None:
         try:
-            # Convert CSV file to BytesIO
+            # Read file as bytes
             file = uploaded_file.getvalue()
 
             # Calculate CSV size
@@ -90,7 +81,6 @@ def main():
             st.write(f"The number of relationships in the dataset is: {num_relationships}")
         except Exception as e:
             st.error(f"Error: {e}")
-
 
 if __name__ == "__main__":
     main()
